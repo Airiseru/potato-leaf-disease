@@ -4,7 +4,7 @@ In agriculture, it is often hard to detect whether a leaf has been contaminated 
 
 This project is done in fulfillment of CS180: Artificial Intelligence done by [Denise Dee](), [Denzell Dy](), and [Jose Miguel Lozada]().
 
-## Methodology
+## :memo: Methodology
 
 work in progress
 
@@ -21,8 +21,16 @@ The repository contains the following structure:
 │   ├── demo_trad.ipynb             # Notebook conaining the demo code using traditional approaches
 │   └── demo_deep.ipynb             # Notebook conaining the demo code using deep learning
 ├── data                            # Datasets
-│   ├── potato_train.csv            # Training set for potato leaf disease
-│   └── potato_test.csv             # Test set for potato leaf disease
+│   ├── potato_train                # Folder containing images of potato leaves based on their class for training the model
+│   │   ├── Virus
+│   │   ├── Phytopthora
+│   │   ├── Pest
+│   │   ├── Healthy
+│   │   ├── Fungi
+│   │   └── Bacteria
+│   └── potato_test                 # Folder containing images of potato leaves based on their class for testing the model
+│   │   ├── Virus
+│   │   └── ...
 ├── predictions                     # Prediction files
 │   ├── pred_trad.csv               # File using the traditional approach
 │   └── pred_deep.csv               # File using the deep learning approach
