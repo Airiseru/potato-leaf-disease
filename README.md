@@ -14,6 +14,7 @@ The repository contains the following structure:
 
 ```
 .
+├── .gitignore
 ├── requirements.txt
 ├── notebooks
 │   ├── develop_trad.ipynb          # Notebook conaining the development code using traditional approaches
@@ -36,6 +37,8 @@ The repository contains the following structure:
 │   └── pred_deep.csv               # File using the deep learning approach
 └── README.md
 ```
+
+Note that due to the size of the datasets, they will not be included in the repository.
 
 ## :computer: Development
 
