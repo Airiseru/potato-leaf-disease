@@ -44,7 +44,7 @@ Note that due to the size of the datasets, they will not be included in the repo
 
 This section contains the development pre-requisites to ensure that all the codes work as intended.
 
-### :green_book: Conda Environment
+### :green_book: uv Basics
 
 The project will use [uv](https://docs.astral.sh/uv/), which is a Python package and project manager. To install uv, check their [installation guide](https://docs.astral.sh/uv/getting-started/installation/) for more details.
 
@@ -79,7 +79,14 @@ However, if using Visual Studio Code, the jupyter notebook can be ran as is usin
 
 ### :snake: Python Dependencies
 
-Note that since uv is being used, all the dependencies are immediately installed. However, a requirements.txt file is provided in the off chance that uv doesn't work. To install the dependencies, simply run the command `pip install -r requirements.txt`
+To install all the dependencies or packages that are being used by the project, simply run the command
+
+```bash
+# Install/sync Python dependencies
+uv sync
+```
+
+However, a requirements.txt file is provided in the off chance that uv doesn't work. To install the dependencies, simply run the command `pip install -r requirements.txt`
 
 ## :books: Code Structure
 
