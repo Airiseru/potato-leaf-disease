@@ -46,7 +46,7 @@ This section contains the development pre-requisites to ensure that all the code
 
 ### :green_book: Conda Environment
 
-The project will use [uv](https://docs.astral.sh/uv/), which is a Python package and project manager. To install uv, check their installation guide: https://docs.astral.sh/uv/getting-started/installation/
+The project will use [uv](https://docs.astral.sh/uv/), which is a Python package and project manager. To install uv, check their [installation guide](https://docs.astral.sh/uv/getting-started/installation/) for more details.
 
 To use the project, it is recommended to use the virtual environment. To activate and deacivate the virtual environment, run the following commands:
 
