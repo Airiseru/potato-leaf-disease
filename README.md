@@ -44,53 +44,25 @@ Note that due to the size of the datasets, they will not be included in the repo
 
 This section contains the development pre-requisites to ensure that all the codes work as intended.
 
-### :green_book: uv Basics
+### :green_book: Conda Environment
 
-The project will use [uv](https://docs.astral.sh/uv/), which is a Python package and project manager. To install uv, check their [installation guide](https://docs.astral.sh/uv/getting-started/installation/) for more details.
-
-To use the project, it is recommended to use the virtual environment. To start, activate, and deacivate the virtual environment, run the following commands:
+The project will use an Anaconda or Miniconda Ecosystem which can be installed through their [website](https://www.anaconda.com/download). To create a conda virtual environment, use the following commands:
 
 ```bash
-# To start a virtual environment instance
-uv venv
+# Create a new conda environment
+conda create --name cs180-proj python=3.12 -y
 
-# To Activate
-source .venv/bin/activate
+# Activate the new environment
+conda activate cs180-proj
 
-# To Deactivate
-deactivate
+# Install Jupyter and the Kernel
+pip install jupyter
+ipython kernel install --name "cs180-proj" --display-name "Python 3.12 (CS180 Project)"
 ```
-
-To install or add a dependency to the project, simply run the command `uv add <module_name>`
-
-```bash
-# Example: installing numpy
-uv add numpy
-```
-
-To run codes, there are multiple ways to do so. The simplest way is to run the following commands:
-
-```bash
-# To open the project in Jupyter Lab
-uv run --with jupyter jupyter lab
-
-# To run a python script
-uv run main.py
-```
-
-However, if using Visual Studio Code, the jupyter notebook can be ran as is using the kernel `.venv/bin/python`
 
 ### :snake: Python Dependencies
 
-To install all the dependencies or packages that are being used by the project, simply run the command
-
-```bash
-# Install/sync Python dependencies
-uv sync
-```
-
-However, a requirements.txt file is provided in the off chance that uv doesn't work. To install the dependencies, simply run the command `pip install -r requirements.txt`
-
+To install the dependencies, simply run the command `pip install -r requirements.txt` using the conda environment.
 ## :books: Code Structure
 
 work in progress
