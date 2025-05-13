@@ -35,6 +35,9 @@ The repository contains the following structure:
 ├── predictions                     # Prediction files
 │   ├── pred_trad.csv               # File using the traditional approach
 │   └── pred_deep.csv               # File using the deep learning approach
+├── models                          # Final model files for prediction
+│   ├── trad_model.pkl              # Pickle file for traditional model
+│   └── deep_model.pkl              # Pickle file for deep learning model
 └── README.md
 ```
 
