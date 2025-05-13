@@ -21,6 +21,7 @@ The repository contains the following structure:
 ```
 .
 ├── .gitignore
+├── app.py                          # File containing the code for the streamlit web application
 ├── requirements.txt
 ├── notebooks
 │   ├── develop_trad.ipynb          # Notebook conaining the development code using traditional approaches
@@ -74,3 +75,7 @@ To install the dependencies, simply run the command `pip install -r requirements
 ## :books: Code Structure
 
 work in progress
+
+## :iphone: Web Application
+
+To run the streamlit web application locally, simply run the command `streamlit run app.py` in the command prompt.
