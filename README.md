@@ -2,11 +2,17 @@
 
 In agriculture, it is often hard to detect whether a leaf has been contaminated or is healthy for produce. As such, this project aims to use a data-driven farming approach to optimize resource use, improve crop yields, and enhance overall farm management.
 
-This project is done in fulfillment of CS180: Artificial Intelligence done by [Denise Dee](), [Denzell Dy](), and [Jose Miguel Lozada]().
+This project is done in fulfillment of CS180: Artificial Intelligence done by [Denise Dee](https://github.com/Airiseru), [Denzell Dy](https://github.com/DenzDy), and [Jose Miguel Lozada](https://github.com/jslozada1221).
 
 ## :memo: Methodology
 
-work in progress
+For both files, the methodology is simple:
+1. Load images
+2. Preprocess the images
+3. Hypertune the model
+4. Evaluate the model
+
+The specific methodologies implemented are further explained in the development notebooks.
 
 ## :file_folder: File Structure
 
@@ -29,12 +35,10 @@ The repository contains the following structure:
 │   │   ├── Healthy
 │   │   ├── Fungi
 │   │   └── Bacteria
-│   └── potato_test                 # Folder containing images of potato leaves based on their class for testing the model
-│   │   ├── Virus
-│   │   └── ...
+│   └── potato_test                 # Folder containing images of potato leaves for testing the model
 ├── predictions                     # Prediction files
-│   ├── pred_trad.csv               # File using the traditional approach
-│   └── pred_deep.csv               # File using the deep learning approach
+│   ├── pred_trad.txt               # File using the traditional approach
+│   └── pred_deep.txt               # File using the deep learning approach
 ├── models                          # Final model files for prediction
 │   ├── trad_model.pkl              # Pickle file for traditional model
 │   └── deep_model.pkl              # Pickle file for deep learning model
@@ -65,7 +69,8 @@ ipython kernel install --name "cs180-proj" --display-name "Python 3.12 (CS180 Pr
 
 ### :snake: Python Dependencies
 
-To install the dependencies, simply run the command `pip install -r requirements.txt` using the conda environment.
+To install the dependencies, simply run the command `pip install -r requirements.txt` using the conda environment. Note, that it is recommended to have [NVIDIA CUDA](https://docs.nvidia.com/cuda/) and [NVIDIA cuDNN](https://developer.nvidia.com/cudnn) installed, if possible, for faster processing and model training.
+
 ## :books: Code Structure
 
 work in progress
