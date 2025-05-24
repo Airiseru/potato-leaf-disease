@@ -38,8 +38,8 @@ The repository contains the following structure:
 │   │   └── Bacteria
 │   └── potato_test                 # Folder containing images of potato leaves for testing the model
 ├── predictions                     # Prediction files
-│   ├── pred_trad.txt               # File using the traditional approach
-│   └── pred_deep.txt               # File using the deep learning approach
+│   ├── pred_trad.csv               # File using the traditional approach
+│   └── pred_deep.csv               # File using the deep learning approach
 ├── models                          # Final model files for prediction
 │   ├── trad_model.pkl              # Pickle file for traditional model
 │   └── deep_model.pkl              # Pickle file for deep learning model
@@ -74,7 +74,7 @@ To install the dependencies, simply run the command `pip install -r requirements
 
 ## :books: Code Structure
 
-work in progress
+For the development notebooks, the structure of the code is simple. It will first contain an in-depth explanation of the methodology that will be attempted for that notebook. It will then proceed with a miscellaneous section which simply contains the `pip install` and the ignore warnings. The libraries used will then be imported and the global constants will be defined. Afterwards, the notebook will proceed with the actual implementation of the methodology. This mainly includes the preprocessing the images, training the model, and evaluating the model.
 
 ## :iphone: Web Application
 
