@@ -22,7 +22,7 @@ from copy import deepcopy
 device = "cuda" if torch.cuda.is_available() else "cpu"
 classes = ["Bacteria", "Fungi", "Healthy", "Pest", "Phytopthora", "Virus"]
 svm_model_dir = "./models/svm_model_final.pkl"
-cnn_model_dir = "./models/model_state_dict-3.pth"
+cnn_model_dir = "./models/dino_model_state_dict.pth"
 
 ORIG_IMG_SIZE = (1500,1500)
 RESIZE_IMG = (420, 420)
