@@ -16,13 +16,14 @@ import pickle
 from tqdm import tqdm
 import typing
 from io import StringIO
+import io
 from copy import deepcopy
 
 # === CONSTANTS ===
 device = "cuda" if torch.cuda.is_available() else "cpu"
 classes = ["Bacteria", "Fungi", "Healthy", "Pest", "Phytopthora", "Virus"]
 svm_model_dir = "./models/svm_model_final.pkl"
-cnn_model_dir = "./models/dino_model_state_dict.pth"
+cnn_model_dir = "./models/dino_model_final.pth"
 
 ORIG_IMG_SIZE = (1500,1500)
 RESIZE_IMG = (420, 420)
@@ -37,14 +38,15 @@ torch.manual_seed(seed_value)
 # DINOv2
 processor = AutoImageProcessor.from_pretrained("facebook/dinov2-large", use_fast=True)
 dino_model = Dinov2Model.from_pretrained("facebook/dinov2-large").to(device)
+dino_model_transformer = torch.hub.load('facebookresearch/dinov2', 'dinov2_vits14')
 
 # === CLASSES === 
 class DinoVisionTransformerClassifier(nn.Module):
     def __init__(self):
         super(DinoVisionTransformerClassifier, self).__init__()
-        self.transformer = deepcopy(dino_model)
+        self.transformer = deepcopy(dino_model_transformer)
         # self.classifier = nn.Sequential(nn.Linear(384, 384), nn.ReLU(), nn.Linear(384, 1))
-        self.classifier = nn.Sequential(nn.Dropout(0.7), nn.ReLU(), nn.Linear(in_features=384, out_features=len(classes), bias=True))
+        self.classifier = nn.Sequential(nn.Dropout(0.5), nn.ReLU(), nn.Linear(in_features=384, out_features=len(classes), bias=True))
         # self.classifier = nn.Linear(in_features=384, out_features=len(classes), bias=True)
 
     def forward(self, x):
@@ -65,9 +67,10 @@ color_dict = {
 # Load the model
 with open(Path(svm_model_dir), 'rb') as file:
     svm_model = pickle.load(file)
-
 transformer_model = DinoVisionTransformerClassifier()
-transformer_model.load_state_dict(torch.load(cnn_model_dir, map_location='cpu'))
+state_dict = torch.load("models/dino_model_state_dict.pth", weights_only=True, map_location="cpu")
+transformer_model.load_state_dict(state_dict)
+transformer_model.eval() 
 
 if "model_to_use" not in st.session_state:
     st.session_state["model_to_use"] = "Traditional"
@@ -107,7 +110,7 @@ def preprocess_image_transformer(img):
         transforms.RandomRotation(10),
         transforms.ToTensor()
     ])
-    return train_transform(img)
+    return train_transform(img).unsqueeze(0)
 
 # === APPLICATION ===
 st.title("Potato Leaf Disease Detection")
@@ -125,11 +128,11 @@ with st.sidebar:
         ],
     )
 
-    st.session_state["save_results"] = st.toggle("Save classification result")
-    st.caption("This saves your classification results in one text file")
+    # st.session_state["save_results"] = st.toggle("Save classification result")
+    # st.caption("This saves your classification results in one text file")
 
-    if st.session_state["save_results"]:
-        st.session_state["save_file_name"] = st.text_input("Enter filename to save as", value=st.session_state["save_file_name"])
+    # if st.session_state["save_results"]:
+    #     st.session_state["save_file_name"] = st.text_input("Enter filename to save as", value=st.session_state["save_file_name"])
 
 # Main application
 uploaded_file = st.file_uploader("Upload image", type=["jpg", "jpeg", "png"], accept_multiple_files=False)
@@ -142,15 +145,15 @@ if st.button("Classify", icon="🤖") and uploaded_file:
         # Read and load the images
         
         # Preprocess images and make predictions
-        preprocessed_files = []
         predictions = []
         match st.session_state['model_to_use']:
             case 'Traditional':
                 preprocessed_file = preprocess_image_trad(uploaded_file)
                 predictions = svm_model.predict(preprocessed_file)
             case 'Transformer':
-                preprocessed_files.append(preprocess_image_transformer(Image.open(uploaded_file)))
-                predictions = torch.argmax(transformer_model(preprocessed_files), dim=1).tolist()
+                preprocessed_file = preprocess_image_transformer(Image.open(uploaded_file))
+                output = transformer_model(preprocessed_file)
+                predictions = output.argmax(dim=1).tolist()
     # Show the image
     
     # Output the predictions
