@@ -21,31 +21,31 @@ The repository contains the following structure:
 ```
 .
 ├── .gitignore
-├── app.py                          # File containing the code for the streamlit web application
+├── app.py                                  # File containing the code for the streamlit web application
 ├── requirements.txt
-├── packages.txt                    # File for streamlit deployment
+├── packages.txt                            # File for streamlit deployment
 ├── notebooks
-│   ├── develop_trad.ipynb          # Notebook conaining the development code using traditional approaches
-│   ├── develop_deep.ipynb          # Notebook conaining the development code using deep learning
-│   ├── demo_trad.ipynb             # Notebook conaining the demo code using traditional approaches
-│   └── demo_deep.ipynb             # Notebook conaining the demo code using deep learning
-├── data                            # Datasets
-│   ├── potato_train                # Folder containing images of potato leaves based on their class for training the model
+│   ├── develop_trad.ipynb                  # Notebook conaining the development code using traditional approaches
+│   ├── develop_deep.ipynb                  # Notebook conaining the development code using deep learning
+│   ├── demo_trad.ipynb                     # Notebook conaining the demo code using traditional approaches
+│   └── demo_deep.ipynb                     # Notebook conaining the demo code using deep learning
+├── data                                    # Datasets
+│   ├── potato_train                        # Folder containing images of potato leaves based on their class for training the model
 │   │   ├── Virus
 │   │   ├── Phytopthora
 │   │   ├── Pest
 │   │   ├── Healthy
 │   │   ├── Fungi
 │   │   └── Bacteria
-│   └── potato_test                 # Folder containing images of potato leaves for testing the model
-├── data_directory                  # Same as the potato train dataset, used for the deep learning approach
-├── predictions                     # Prediction files
-│   ├── pred_trad.csv               # File using the traditional approach
-│   └── pred_deep.csv               # File using the deep learning approach
-├── models                          # Final model files for prediction
-│   ├── svm_model.pkl               # Pickle file for traditional model (SVM)
-│   ├── dino_model_state_dict.pth   # State dictionary for the deep learning with transformer model (DINOv2)
-│   └── dino_model_final.pth        # Torch model file for the deep learning with transformer model (DINOv2)
+│   └── potato_test                         # Folder containing images of potato leaves for testing the model
+├── data_directory                          # Same as the potato train dataset, used for the deep learning approach
+├── predictions                             # Prediction files
+│   ├── group8_svm_predictions.csv          # File using the traditional approach
+│   └── group8_dino_predictions.csv         # File using the deep learning approach
+├── models                                  # Final model files for prediction
+│   ├── svm_model.pkl                       # Pickle file for traditional model (SVM)
+│   ├── dino_model_state_dict.pth           # State dictionary for the deep learning with transformer model (DINOv2)
+│   └── dino_model_final.pth                # Torch model file for the deep learning with transformer model (DINOv2)
 └── README.md
 ```
 
