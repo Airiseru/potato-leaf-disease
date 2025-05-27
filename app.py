@@ -1,22 +1,13 @@
 import streamlit as st
-import cv2
-import cv2.typing as cv_typing
 from pathlib import Path
-import os
 import numpy as np
 import tensorflow as tf
 from PIL import Image
-from tensorflow.keras.preprocessing import image
 from transformers import AutoImageProcessor, Dinov2Model
 import torch
 from torch import nn
-from torchvision.io import decode_image, ImageReadMode
 from torchvision import transforms
 import pickle
-from tqdm import tqdm
-import typing
-from io import StringIO
-import io
 from copy import deepcopy
 
 # === CONSTANTS ===
@@ -37,7 +28,8 @@ torch.manual_seed(seed_value)
 
 # DINOv2
 processor = AutoImageProcessor.from_pretrained("facebook/dinov2-large", use_fast=True)
-dino_model = Dinov2Model.from_pretrained("facebook/dinov2-large").to(device)
+dino_model = Dinov2Model.from_pretrained("facebook/dinov2-large")
+dino_model = dino_model.to(device)
 dino_model_transformer = torch.hub.load('facebookresearch/dinov2', 'dinov2_vits14')
 
 # === CLASSES === 
@@ -45,9 +37,7 @@ class DinoVisionTransformerClassifier(nn.Module):
     def __init__(self):
         super(DinoVisionTransformerClassifier, self).__init__()
         self.transformer = deepcopy(dino_model_transformer)
-        # self.classifier = nn.Sequential(nn.Linear(384, 384), nn.ReLU(), nn.Linear(384, 1))
-        self.classifier = nn.Sequential(nn.Dropout(0.5), nn.ReLU(), nn.Linear(in_features=384, out_features=len(classes), bias=True))
-        # self.classifier = nn.Linear(in_features=384, out_features=len(classes), bias=True)
+        self.classifier = nn.Sequential(nn.Dropout(0.7), nn.ReLU(), nn.Linear(in_features=384, out_features=len(classes), bias=True))
 
     def forward(self, x):
         x = self.transformer(x)
@@ -61,7 +51,7 @@ color_dict = {
     2:"green",
     3:"violet",
     4:"orange",
-    5:"yellow"
+    5:"blue"
 }
 
 # Load the model
@@ -82,13 +72,11 @@ if "save_file_name" not in st.session_state:
     st.session_state["save_file_name"] = "results.txt"
 
 # === FUNCTIONS ===
-def load_images():
-    pass
-
 def preprocess_image_trad(img):
     all_features = []
     batch = Image.fromarray(np.clip(Image.open(img), 0, 255).astype(np.uint8))
-    # Preprocess and move to GPU
+
+    # Preprocess and move to device
     inputs = processor(images=batch, return_tensors="pt").to(device)
 
     # Forward pass
@@ -106,8 +94,6 @@ def preprocess_image_trad(img):
 def preprocess_image_transformer(img):
     train_transform = transforms.Compose([
         transforms.Resize(RESIZE_IMG),
-        transforms.RandomHorizontalFlip(p=0.5), # Random flip with 50% probability
-        transforms.RandomRotation(10),
         transforms.ToTensor()
     ])
     return train_transform(img).unsqueeze(0)
@@ -128,22 +114,15 @@ with st.sidebar:
         ],
     )
 
-    # st.session_state["save_results"] = st.toggle("Save classification result")
-    # st.caption("This saves your classification results in one text file")
-
-    # if st.session_state["save_results"]:
-    #     st.session_state["save_file_name"] = st.text_input("Enter filename to save as", value=st.session_state["save_file_name"])
-
 # Main application
 uploaded_file = st.file_uploader("Upload image", type=["jpg", "jpeg", "png"], accept_multiple_files=False)
 if uploaded_file != None:
+    # Open image
     st.image(Image.open(uploaded_file),width=500)
 
 
 if st.button("Classify", icon="🤖") and uploaded_file:
     with st.spinner("Classifying the image(s)...", show_time=True):
-        # Read and load the images
-        
         # Preprocess images and make predictions
         predictions = []
         match st.session_state['model_to_use']:
@@ -154,11 +133,10 @@ if st.button("Classify", icon="🤖") and uploaded_file:
                 preprocessed_file = preprocess_image_transformer(Image.open(uploaded_file))
                 output = transformer_model(preprocessed_file)
                 predictions = output.argmax(dim=1).tolist()
-    # Show the image
     
     # Output the predictions
     st.header("Results")
-    st.markdown(f"The model predicts that the image is from the :{color_dict[predictions[0]]}-badge[{classes[predictions[0]]}] class.")
+    st.markdown(f"The model predicts that the image is from the **:{color_dict[predictions[0]]}-badge[{classes[predictions[0]]}]** class.")
 
     st.toast("Done!", icon='🎉')
 
