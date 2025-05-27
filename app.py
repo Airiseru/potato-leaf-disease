@@ -26,25 +26,7 @@ tf.random.set_seed(seed_value)
 np.random.seed(seed_value)
 torch.manual_seed(seed_value)
 
-# DINOv2
-processor = AutoImageProcessor.from_pretrained("facebook/dinov2-large", use_fast=True)
-dino_model = Dinov2Model.from_pretrained("facebook/dinov2-large")
-dino_model = dino_model.to(device)
-dino_model_transformer = torch.hub.load('facebookresearch/dinov2', 'dinov2_vits14')
-
 # === CLASSES === 
-class DinoVisionTransformerClassifier(nn.Module):
-    def __init__(self):
-        super(DinoVisionTransformerClassifier, self).__init__()
-        self.transformer = deepcopy(dino_model_transformer)
-        self.classifier = nn.Sequential(nn.Dropout(0.7), nn.ReLU(), nn.Linear(in_features=384, out_features=len(classes), bias=True))
-
-    def forward(self, x):
-        x = self.transformer(x)
-        x = self.transformer.norm(x)
-        x = self.classifier(x)
-        return x
-
 color_dict = {
     0:"gray",
     1:"red",
@@ -53,14 +35,6 @@ color_dict = {
     4:"orange",
     5:"blue"
 }
-
-# Load the model
-with open(Path(svm_model_dir), 'rb') as file:
-    svm_model = pickle.load(file)
-transformer_model = DinoVisionTransformerClassifier()
-state_dict = torch.load("models/dino_model_state_dict.pth", weights_only=True, map_location="cpu")
-transformer_model.load_state_dict(state_dict)
-transformer_model.eval() 
 
 if "model_to_use" not in st.session_state:
     st.session_state["model_to_use"] = "Traditional"
@@ -71,17 +45,51 @@ if "save_results" not in st.session_state:
 if "save_file_name" not in st.session_state:
     st.session_state["save_file_name"] = "results.txt"
 
+# DINOv2
+if "dino_model" not in st.session_state:
+    st.session_state["dino_model"] = Dinov2Model.from_pretrained("facebook/dinov2-large")
+    st.session_state["dino_model"] = st.session_state["dino_model"].to(device)
+
+if "dino_model_transformer" not in st.session_state:
+    st.session_state["dino_model_transformer"] = torch.hub.load('facebookresearch/dinov2', 'dinov2_vits14')
+
+if "processor" not in st.session_state:
+    st.session_state["processor"] = AutoImageProcessor.from_pretrained("facebook/dinov2-large", use_fast=True)
+
+# Load the models
+if "svm_model" not in st.session_state:
+    with open(Path(svm_model_dir), 'rb') as file:
+        st.session_state["svm_model"] = pickle.load(file)
+
+class DinoVisionTransformerClassifier(nn.Module):
+    def __init__(self):
+        super(DinoVisionTransformerClassifier, self).__init__()
+        self.transformer = deepcopy(st.session_state["dino_model_transformer"])
+        self.classifier = nn.Sequential(nn.Dropout(0.7), nn.ReLU(), nn.Linear(in_features=384, out_features=len(classes), bias=True))
+
+    def forward(self, x):
+        x = self.transformer(x)
+        x = self.transformer.norm(x)
+        x = self.classifier(x)
+        return x
+
+if "transformer_model" not in st.session_state:
+    st.session_state["transformer_model"] = DinoVisionTransformerClassifier()
+    st.session_state["state_dict"] = torch.load("models/dino_model_state_dict.pth", weights_only=True, map_location="cpu")
+    st.session_state["transformer_model"].load_state_dict(st.session_state["state_dict"])
+    st.session_state["transformer_model"].eval() 
+
 # === FUNCTIONS ===
 def preprocess_image_trad(img):
     all_features = []
     batch = Image.fromarray(np.clip(Image.open(img), 0, 255).astype(np.uint8))
 
     # Preprocess and move to device
-    inputs = processor(images=batch, return_tensors="pt").to(device)
+    inputs = st.session_state["processor"](images=batch, return_tensors="pt").to(device)
 
     # Forward pass
     with torch.no_grad():
-        outputs = dino_model(**inputs)
+        outputs = st.session_state["dino_model"](**inputs)
         features = outputs.pooler_output
         print("\tFeatures taken using  DINOv2")
 
@@ -128,10 +136,10 @@ if st.button("Classify", icon="🤖") and uploaded_file:
         match st.session_state['model_to_use']:
             case 'Traditional':
                 preprocessed_file = preprocess_image_trad(uploaded_file)
-                predictions = svm_model.predict(preprocessed_file)
+                predictions = st.session_state["svm_model"].predict(preprocessed_file)
             case 'Transformer':
                 preprocessed_file = preprocess_image_transformer(Image.open(uploaded_file))
-                output = transformer_model(preprocessed_file)
+                output = st.session_state["transformer_model"](preprocessed_file)
                 predictions = output.argmax(dim=1).tolist()
     
     # Output the predictions
